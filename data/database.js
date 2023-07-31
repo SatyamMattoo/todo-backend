@@ -6,6 +6,6 @@ mongoose
     useNewUrlParser: true,
     dbName: "todo",
   })
-  .then(() => console.log("Database connected"))
+  .then((c) => console.log(`Database connected to ${c.connection.host}`))
   .catch((e) => console.log(e));
 }
