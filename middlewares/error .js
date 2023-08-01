@@ -7,7 +7,7 @@ class ErrorHandler extends Error{
 
 export const error=(err,req,res,next)=>{
     message= err.message || "Internal server errror";
-    code= err.statusCode || 404;
+    code= err.statusCode || 500;
 
     res.status(code).json({
         success: false,
