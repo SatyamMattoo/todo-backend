@@ -6,12 +6,12 @@ class ErrorHandler extends Error{
 }
 
 export const error=(err,req,res,next)=>{
-    message= err.message || "Internal server errror";
-    code= err.statusCode || 500;
+    err.message= err.message || "Internal server errror";
+    err.statusCode= err.statusCode || 500;
 
-    res.status(code).json({
+    res.status(err.statusCode).json({
         success: false,
-        message
+        message: err.message
     })
 }
 
