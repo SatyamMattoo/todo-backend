@@ -1,6 +1,7 @@
 import { User } from "../models/user.js";
 import bcrypt from "bcrypt";
 import { setCookie } from "../utils/features.js";
+import ErrorHandler from "../middlewares/error .js";
 
 export const register = async (req, res, next) => {
   try {
@@ -8,7 +9,7 @@ export const register = async (req, res, next) => {
 
     let user = await User.findOne({ email });
 
-    if (user) next(new ErrorHandler("User already Exists", 400));
+    if (user) return next(new ErrorHandler("User already Exists", 400));
 
     const hashedPassword = await bcrypt.hash(password, 10);
     user = await User.create({ name, email, password: hashedPassword });
@@ -24,10 +25,10 @@ export const login = async (req, res, next) => {
 
     const user = await User.findOne({ email }).select("+password");
 
-    if (!user) next(new ErrorHandler("Register first", 400));
+    if (!user) return next(new ErrorHandler("Register first", 400));
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) next(new ErrorHandler("Invalid Password", 400));
+    if (!isMatch) return next(new ErrorHandler("Invalid Password", 400));
 
     setCookie(user, res, `Logged In Successfully as ${user.name}`, 201);
   } catch (error) {
@@ -52,6 +53,7 @@ export const logout = (req, res) => {
     })
     .json({
       success: true,
+      user: req.user,
       message: "Logged Out",
     });
 };
